@@ -1,5 +1,6 @@
 import React from "react";
 
+import { ToastContext } from "../ToastProvider";
 import Button from "../Button";
 import ToastShelf from "../ToastShelf";
 
@@ -10,7 +11,8 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState("notice");
-  const [toasts, setToasts] = React.useState([]);
+
+  const { createToast } = React.useContext(ToastContext);
 
   const inputRef = React.useRef();
 
@@ -25,22 +27,7 @@ function ToastPlayground() {
     setVariant("notice"); // set variant back to default notice
     inputRef.current.focus(); // set input to be focused after submit
 
-    const newMessage = {
-      id: crypto.randomUUID(),
-      message,
-      variant,
-    };
-
-    const newToasts = [...toasts, newMessage];
-    setToasts(newToasts);
-  }
-
-  function handleDismiss(id) {
-    const currentToasts = [...toasts];
-    const remainingToasts = currentToasts.filter((toast) => {
-      return toast.id !== id;
-    });
-    setToasts(remainingToasts);
+    createToast(message, variant);
   }
 
   return (
@@ -50,7 +37,7 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      <ToastShelf toasts={toasts} handleDismiss={handleDismiss} />
+      <ToastShelf />
 
       <form onSubmit={handleSubmit}>
         <div className={styles.controlsWrapper}>
