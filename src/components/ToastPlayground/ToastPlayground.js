@@ -1,7 +1,7 @@
 import React from "react";
 
 import Button from "../Button";
-import Toast from "../Toast";
+import ToastShelf from "../ToastShelf";
 
 import styles from "./ToastPlayground.module.css";
 
@@ -10,7 +10,7 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState("notice");
-  const [showToast, setShowToast] = React.useState(false);
+  const [toasts, setToasts] = React.useState([]);
 
   const inputRef = React.useRef();
 
@@ -21,15 +21,26 @@ function ToastPlayground() {
   function handleSubmit(event) {
     event.preventDefault();
     console.log(`Submitted...${message} and ${variant}`);
-    //setMessage(""); // set textarea back to blank after submitting message
-    //setVariant("notice"); // set variant back to default notice
-    //inputRef.current.focus(); // set input to be focused after submit
+    setMessage(""); // set textarea back to blank after submitting message
+    setVariant("notice"); // set variant back to default notice
+    inputRef.current.focus(); // set input to be focused after submit
 
-    setShowToast(true);
+    const newMessage = {
+      id: crypto.randomUUID(),
+      message,
+      variant,
+    };
+
+    const newToasts = [...toasts, newMessage];
+    setToasts(newToasts);
   }
 
-  function handleDismiss(event) {
-    setShowToast(false);
+  function handleDismiss(id) {
+    const currentToasts = [...toasts];
+    const remainingToasts = currentToasts.filter((toast) => {
+      return toast.id !== id;
+    });
+    setToasts(remainingToasts);
   }
 
   return (
@@ -39,11 +50,7 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      {showToast && (
-        <Toast variant={variant} handleDismiss={handleDismiss}>
-          {message}
-        </Toast>
-      )}
+      <ToastShelf toasts={toasts} handleDismiss={handleDismiss} />
 
       <form onSubmit={handleSubmit}>
         <div className={styles.controlsWrapper}>
