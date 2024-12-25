@@ -25,7 +25,7 @@ function ToastProvider({ children }) {
   }
 
   return (
-    <ToastContext value={{ toasts, createToast, handleDismiss }}>
+    <ToastContext value={{ toasts, setToasts, createToast, handleDismiss }}>
       {children}
     </ToastContext>
   );
