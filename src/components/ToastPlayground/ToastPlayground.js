@@ -1,6 +1,7 @@
 import React from "react";
 
 import Button from "../Button";
+import Toast from "../Toast";
 
 import styles from "./ToastPlayground.module.css";
 
@@ -9,6 +10,7 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState("notice");
+  const [showToast, setShowToast] = React.useState(false);
 
   const inputRef = React.useRef();
 
@@ -19,9 +21,15 @@ function ToastPlayground() {
   function handleSubmit(event) {
     event.preventDefault();
     console.log(`Submitted...${message} and ${variant}`);
-    setMessage(""); // set textarea back to blank after submitting message
-    setVariant("notice"); // set variant back to default notice
-    inputRef.current.focus(); // set input to be focused after submit
+    //setMessage(""); // set textarea back to blank after submitting message
+    //setVariant("notice"); // set variant back to default notice
+    //inputRef.current.focus(); // set input to be focused after submit
+
+    setShowToast(true);
+  }
+
+  function handleDismiss(event) {
+    setShowToast(false);
   }
 
   return (
@@ -30,6 +38,12 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
+
+      {showToast && (
+        <Toast variant={variant} handleDismiss={handleDismiss}>
+          {message}
+        </Toast>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className={styles.controlsWrapper}>
